@@ -71,91 +71,48 @@ jogo = [
 
 """
 
-import os
-
-from platform import mac_ver
-
-
-def main():
-  jogo = [
-    "..k.....",
-    "ppp.pppp",
-    "........",
-    ".R...B..",
-    "........",
-    "........",
-    "PPPPPPPP",
-    "K......."
-  ]
-  # for i in range(0, 8): jogo.append(input(f"{i + 1}: "))
-
+def main(jogo):
   for l, linha in enumerate(jogo):
     for c, casa in enumerate(linha):
-      if casa == 'k':
-        check = checkXeque(l, c, jogo)
-        print(check)
-      elif casa == 'K':
-        check = checkXeque(l, c, jogo, True)
-        print(check)
+      if casa == 'k' and checkXeque(l, c, jogo): return "Rei preto está em cheque"
+      elif casa == 'K' and checkXeque(l, c, jogo, True): return "Rei branco está em cheque"
+  return "nenhum rei esta em cheque."
 
 def checkXeque(l, c, jogo, preto = False):
-  tabela = [[], [], [], [], [], [], [], []]
-
-  for tl, tlinha in enumerate(jogo):
-    for tcasa in tlinha:
-      if preto and tcasa == 'K': tabela[tl].append([5, tcasa])
-      elif tcasa == 'k': tabela[tl].append([5, tcasa])
-      else: tabela[tl].append([4, tcasa])
-
   def check(y, x, ataque):
-    if 0 > x or x > 7 or 0 > y or y > 7: return [3, [x, y], ""]
+    if 0 > x or x > 7 or 0 > y or y > 7: return 1
     cs = jogo[y][x]
-    if ataque.find(cs) != -1: return [2, [x, y], cs]
-    elif cs == '.': return [0, [x, y], cs]
-    else: return [1, [x, y], cs]
+    if ataque.find(cs) != -1: return 2
+    if cs != '.': return 1
 
   def expansao(linha, coluna, ataque, id):
     if preto: ataque = ataque.lower()
     for i in range(1, 8):
-      [status, [x, y], casa] = check(linha(i), coluna(i), ataque)
-      print(f"{id:<2} {status} ({x:0>2}, {y:0>2}) {casa}")
-      if status != 3: tabela[y][x] = [status, casa]
-      if status: return False
-  
+      res = check(linha(i), coluna(i), ataque)
+      match res:
+        case 1: return False
+        case 2: return True
+
   def especifico(cods, ataque, id):
     if preto: ataque = ataque.lower()
     for [linha, coluna] in cods:
-      [status, [x, y], casa] = check(linha, coluna, ataque)
-      print(f"{id:<2} {status} ({x:0>2}, {y:0>2}) {casa}")
-      if status == 2: tabela[y][x] = [status, casa]
+      res = check(linha, coluna, ataque)
+      match res:
+        case 1: return False
+        case 2: return True
+  
+  if expansao(lambda i: l,     lambda i: c - i, "RQ", "o" ) : return True
+  if expansao(lambda i: l - i, lambda i: c - i, "BQ", "no") : return True
+  if expansao(lambda i: l - i, lambda i: c,     "RQ", "n" ) : return True
+  if expansao(lambda i: l - i, lambda i: c + i, "BQ", "nl") : return True
+  if expansao(lambda i: l,     lambda i: c + i, "RQ", "l" ) : return True
+  if expansao(lambda i: l + i, lambda i: c + i, "BQ", "sl") : return True
+  if expansao(lambda i: l + i, lambda i: c,     "RQ", "s" ) : return True
+  if expansao(lambda i: l + i, lambda i: c - i, "BQ", "so") : return True
+  if especifico([[l+1, c+1], [l+1, c-1]], "P", "p") : return True
+  if especifico([[l-2, c+1], [l-2, c-1], [l+2, c+1], [l+2, c-1], [l+1, c-2], [l+1, c+2], [l-1, c+2],  [l-1, c-2]], "N", "n") : return True
 
-  expansao(lambda i: l,     lambda i: c - i, "RQ", "o" )
-  expansao(lambda i: l - i, lambda i: c - i, "BQ", "no")
-  expansao(lambda i: l - i, lambda i: c,     "RQ", "n" )
-  expansao(lambda i: l - i, lambda i: c + i, "BQ", "nl")
-  expansao(lambda i: l,     lambda i: c + i, "RQ", "l" )
-  expansao(lambda i: l + i, lambda i: c + i, "BQ", "sl")
-  expansao(lambda i: l + i, lambda i: c,     "RQ", "s" )
-  expansao(lambda i: l + i, lambda i: c - i, "BQ", "so")
-
-  especifico([[l+1, c+1], [l+1, c-1]], "P", "p")
-  especifico([
-    [l-2, c+1], [l-2, c-1], [l+2, c+1], [l+2, c-1], 
-    [l+1, c-2], [l+1, c+2], [l-1, c+2],  [l-1, c-2]], 
-    "N", "n")
-
-  print()
-  for linha in (tabela):
-    tlinha = ""
-    for [status, casa] in linha:
-      cor = '\033[30m'
-      if   status == 1: cor = '\033[34m'
-      elif status == 0: cor = '\033[31m'
-      elif status == 2: cor = '\033[31m'
-      elif status == 5: cor = '\033[37m'
-      tlinha += str(cor + casa + '\033[0m ')
-    print(tlinha)
-  print()
-
-
-main()
+while True:
+  jogo = []
+  for i in range(0, 8): jogo.append(input(f"{i + 1}: "))
+  print(main(jogo))
