@@ -81,7 +81,7 @@ def main():
         ".2..3..4",
         "..a.a.a.",
         "........",
-        ".1B.k.a5",
+        "....k.a5",
         "........",
         "..B.a.a.",
         ".9..7..6",
@@ -101,33 +101,32 @@ def checkXeque(jogo):
 def checkBranco(l, c, jogo):
     tabela = [[], [], [], [], [], [], [], []]
 
-    def check(y, x, ataque):
-        if 0 > x or x > 7 or 0 > y or y > 7: return [1, [x, y], ""]
-        cs = jogo[y][x]
-        if ataque.find(cs) != -1: return [2, [x, y], cs]
-        elif cs == '.': return [0, [x, y], cs]
-        else: return [1, [x, y], cs]
+    for tl, tlinha in enumerate(jogo):
+        for tcasa in tlinha:
+            tabela[tl].append([4, tcasa])
 
-    def expansao (linha, coluna, ataque, id):
+    def check(y, x, ataque):
+        if 0 > x or x > 7 or 0 > y or y > 7:
+            return [3, [x, y], ""]
+        cs = jogo[y][x]
+        if ataque.find(cs) != -1:
+            return [2, [x, y], cs]
+        elif cs == '.':
+            return [0, [x, y], cs]
+        else:
+            return [1, [x, y], cs]
+
+    def expansao(linha, coluna, ataque, id):
         for i in range(1, 8):
             [status, [x, y], casa] = check(linha(i), coluna(i), ataque)
-            print(f"{id} {status} ({x:0>2}, {y:0>2}) {casa}")
-            # tabela[y][x] = [sta]
-            if status: return [status, [x, y], casa]
-
-    """ 
-            
-    NO  N   NL    
-      - | -
-    O---|---L
-      - | -
-    SO  S   SL
-    
-    """
+            print(f"{id} {status} ({x:0>2}, {y:0>2}) {casa} {status != 3}")
+            if status != 3:
+                tabela[y][x] = [status, casa]
+            if status:
+                return [status, [x, y], casa]
 
     ex = {}
-    
-    ex["o" ] = expansao (lambda i: l,     lambda i: c - i, "RQ", "<<")
+    ex["o"] = expansao(lambda i: l, lambda i: c - i, "RQ", "<<")
     ex["no"] = expansao (lambda i: l - i, lambda i: c - i, "BQ", "^<")
     ex["n" ] = expansao (lambda i: l - i, lambda i: c,     "RQ", "^^")
     ex["nl"] = expansao (lambda i: l - i, lambda i: c + i, "BQ", ">^")
@@ -135,5 +134,19 @@ def checkBranco(l, c, jogo):
     ex["sl"] = expansao (lambda i: l + i, lambda i: c + i, "BQ", ",>")
     ex["s" ] = expansao (lambda i: l + i, lambda i: c,     "RQ", ",,")
     ex["so"] = expansao (lambda i: l + i, lambda i: c - i, "BQ", "<,")
+
+    for linha in (tabela):
+        tlinha = ""
+        for [status, casa] in linha:
+            cor = '\033[30m'
+            if status == 1:
+                cor = '\033[34m'
+            if status == 0:
+                cor = '\033[31m'
+            if status == 2:
+                cor = '\033[31m'
+            tlinha += str(cor + casa + '\033[0m ')
+        print(tlinha)
+
 
 main()
