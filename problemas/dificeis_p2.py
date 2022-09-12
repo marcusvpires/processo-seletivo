@@ -78,32 +78,27 @@ from platform import mac_ver
 
 def main():
   jogo = [
-    ".....R..",
-    "..Q.B.B.",
+    "..k.....",
+    "ppp.pppp",
     "........",
-    ".R..k...",
-    "...P..N.",
-    "....Q...",
-    "....R..P",
+    ".R...B..",
     "........",
+    "........",
+    "PPPPPPPP",
+    "K......."
   ]
   # for i in range(0, 8): jogo.append(input(f"{i + 1}: "))
-  os.system('cls')
-  checkXeque(jogo)
 
-
-def checkXeque(jogo):
   for l, linha in enumerate(jogo):
     for c, casa in enumerate(linha):
       if casa == 'k':
-        check = check(l, c, jogo)
+        check = checkXeque(l, c, jogo)
         print(check)
       elif casa == 'K':
-        check = check(l, c, jogo, True)
+        check = checkXeque(l, c, jogo, True)
         print(check)
 
-
-def check(l, c, jogo, preto = False):
+def checkXeque(l, c, jogo, preto = False):
   tabela = [[], [], [], [], [], [], [], []]
 
   for tl, tlinha in enumerate(jogo):
@@ -120,6 +115,7 @@ def check(l, c, jogo, preto = False):
     else: return [1, [x, y], cs]
 
   def expansao(linha, coluna, ataque, id):
+    if preto: ataque = ataque.lower()
     for i in range(1, 8):
       [status, [x, y], casa] = check(linha(i), coluna(i), ataque)
       print(f"{id:<2} {status} ({x:0>2}, {y:0>2}) {casa}")
@@ -127,6 +123,7 @@ def check(l, c, jogo, preto = False):
       if status: return False
   
   def especifico(cods, ataque, id):
+    if preto: ataque = ataque.lower()
     for [linha, coluna] in cods:
       [status, [x, y], casa] = check(linha, coluna, ataque)
       print(f"{id:<2} {status} ({x:0>2}, {y:0>2}) {casa}")
