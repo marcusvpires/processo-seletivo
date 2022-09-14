@@ -1,73 +1,174 @@
-def main():
-  jogo = [
-    "..k.....",
-    "ppp.pppp",
-    "........",
-    ".R...B..",
-    "........",
-    "........",
-    "PPPPPPPP",
-    "K......."
-  ]
-  # for i in range(0, 8): jogo.append(input(f"{i + 1}: "))
+import random
 
-  for l, linha in enumerate(jogo):
-    for c, casa in enumerate(linha):
-      if casa != '.': tabelaDeAtaque(l, c, jogo, casa.isupper())
+def criaTabela (tabuleiro, x, y):
+  tabela = []
+  for linha in tabuleiro:
+    tabela.append([])
+    for casa in linha:
+      tabela[-1].append([4, casa])
+  tabela[y][x] = [5, tabela[y][x][1]]
+  return tabela
 
-def tabelaDeAtaque(l, c, jogo, preto = False):
-  tabela = [[],[],[],[],[],[],[],[]]
-  for index, tLinha in enumerate(jogo):
-    for tCasa in tLinha: 
-      tabela[index].append([1, tCasa])
+def check(y, x, pecas, tabuleiro):
+  # categoria 0: casa vazia em area de ataque
+  # categoria 1: bloqueio
+  # categoria 2: area de ataque
+  # categoria 3: fora do trabuleiro
+  # categoria 4: area vazia fora da area de ataque
+  # categoria 5: peca em analise
+  if 0 > x or x > 7 or 0 > y or y > 7: return [3, [x, y], ""]
+  cs = tabuleiro[y][x]
+  if pecas.find(cs) != -1: return [2, [x, y], cs]
+  elif cs == '.': return [0, [x, y], cs]
+  else: return [1, [x, y], cs]
 
-  def check(y, x, ataque):
-    if 0 > x or x > 7 or 0 > y or y > 7: return [3, [x, y], ""]
-    cs = jogo[y][x]
-    if ataque.find(cs) != -1: return [2, [x, y], cs]
-    elif cs == '.': return [0, [x, y], cs]
-    else: return [1, [x, y], cs]
+def expansao(linha, coluna, pecas, tabuleiro, tabela):
+  for i in range(1, 8):
+    [categoria, [x, y], casa] = check(linha(i), coluna(i), pecas, tabuleiro)
+    if categoria != 3: 
+      tabela[y][x] = [categoria, casa]
+      if categoria == 2: return [[x, y], casa]
+      elif categoria: return False
+    else: return False
+    
 
-  def expansao(linha, coluna, ataque, id):
-    if preto: ataque = ataque.lower()
-    for i in range(1, 8):
-      [status, [x, y], casa] = check(linha(i), coluna(i), ataque)
-      # print(f"{id:<2} {status} ({x:0>2}, {y:0>2}) {casa}")
-      if status != 3: tabela[y][x] = [status, casa]
-      if status: return False
+def direcionado(coordenadas, pecas, tabuleiro, tabela):
+  for [linha, coluna] in coordenadas:
+    [categoria, [x, y], casa] = check(linha, coluna, pecas, tabuleiro)
+    if categoria == 2: 
+      tabela[y][x] = [categoria, casa]
+      return [[x, y], casa]
+    return False
 
-  def especifico(cods, ataque, id):
-    if preto: ataque = ataque.lower()
-    for [linha, coluna] in cods:
-      [status, [x, y], casa] = check(linha, coluna, ataque)
-      # print(f"{id:<2} {status} ({x:0>2}, {y:0>2}) {casa}")
-      if status == 2: tabela[y][x] = [status, casa]
-  
-  expansao(lambda i: l,     lambda i: c - i, "RQ", "o" )
-  expansao(lambda i: l - i, lambda i: c - i, "BQ", "no")
-  expansao(lambda i: l - i, lambda i: c,     "RQ", "n" )
-  expansao(lambda i: l - i, lambda i: c + i, "BQ", "nl")
-  expansao(lambda i: l,     lambda i: c + i, "RQ", "l" )
-  expansao(lambda i: l + i, lambda i: c + i, "BQ", "sl")
-  expansao(lambda i: l + i, lambda i: c,     "RQ", "s" )
-  expansao(lambda i: l + i, lambda i: c - i, "BQ", "so")
-
-  especifico([[l+1, c+1], [l+1, c-1]], "P", "p")
-  especifico([
-    [l-2, c+1], [l-2, c-1], [l+2, c+1], [l+2, c-1], 
-    [l+1, c-2], [l+1, c+2], [l-1, c+2],  [l-1, c-2]], 
-    "N", "n")
-
-  print(f"Peça {jogo[l][c]}")
-  print("\n\x1b[38m  1 2 3 4 5 6 7 8")
+def imprimeTabela (tabela, x, y, tabuleiro):
+  print(f"Peça {tabuleiro[y][x]} ({x}, {y})")
+  print("\n\x1b[30m  1 2 3 4 5 6 7 8")
   for index, linha in enumerate(tabela):
-    sequencia = f"\x1b[37m{index}"
+    sequencia = f"\x1b[30m{index}"
     for [categoria, casa] in linha:
       match categoria:
-        case 0: sequencia += f" \x1b[33m{casa}"
+        case 0: sequencia += f" \x1b[31m{casa}"
         case 1: sequencia += f" \x1b[34m{casa}"
         case 2: sequencia += f" \x1b[31m{casa}"
+        case 4: sequencia += f" \x1b[30m{casa}"
+        case 5: sequencia += f" \x1b[32m{casa}"
     print(sequencia)
   print("\n\x1b[m")
 
-main()
+def mapear(x, y, tabuleiro, isMaiusculo = False):
+  tabela = criaTabela(tabuleiro, x, y)
+  mapa = {}
+
+  pecas = ["RQ", "BQ", "P", "N"]
+  if isMaiusculo: pecas = list(map(lambda peca: peca.lower(), pecas))
+  mapa["norte"]    = expansao(lambda i: y - i, lambda i: x,     pecas[0], tabuleiro, tabela) # norte
+  mapa["sul"]      = expansao(lambda i: y + i, lambda i: x,     pecas[0], tabuleiro, tabela) # sul
+  mapa["leste"]    = expansao(lambda i: y,     lambda i: x + i, pecas[0], tabuleiro, tabela) # leste
+  mapa["oeste"]    = expansao(lambda i: y,     lambda i: x - i, pecas[0], tabuleiro, tabela) # oeste
+  mapa["noroeste"] = expansao(lambda i: y - i, lambda i: x - i, pecas[1], tabuleiro, tabela) # noroeste
+  mapa["nordeste"] = expansao(lambda i: y - i, lambda i: x + i, pecas[1], tabuleiro, tabela) # nordeste
+  mapa["sudoeste"] = expansao(lambda i: y + i, lambda i: x - i, pecas[1], tabuleiro, tabela) # sudoeste
+  mapa["sudeste"] = expansao(lambda i: y + i, lambda i: x + i, pecas[1], tabuleiro, tabela) # suldeste
+
+  mapa["peao"]   = (direcionado([[y+1, x+1], [y+1, x-1]], pecas[2], tabuleiro, tabela)) # peao
+  mapa["cavalo"] = (direcionado([
+    [y-2, x+1], [y-2, x-1], [y+2, x+1], [y+2, x-1], 
+    [y+1, x-2], [y+1, x+2], [y-1, x+2],  [y-1, x-2]], 
+    pecas[3], tabuleiro, tabela)) # cavalo
+
+  imprimeTabela(tabela, x, y, tabuleiro)
+  return mapa
+
+
+def imprimeResultado (resposta):
+  nomes = { "k": "rei", "p": "peão", "b": "bispo", "r": "torre", "q": "rainha", "n": "cavalo" }
+  xeque = { "branco": False, "preto": False }
+  for peca in resposta:
+    for orientacao in resposta[peca]:
+      mapa = resposta[peca][orientacao]
+      if mapa:
+        chave = peca.split('_')
+        coordenada = f"{chave[0][0]}, {chave[0][1]}"
+        nome = f"{nomes[chave[1].lower()]} {'preto' if chave[1].islower() else 'branco'}"
+        ataque = f"({mapa[0][0]}, {mapa[0][1]}) [ {(nomes[mapa[1].lower()]):7} ]"
+        print(f"({coordenada}) [ {nome:13} ] está sobre ataque do {ataque} na direção {orientacao}")
+        if nome == "rei preto": xeque["preto"] = True
+        if nome == "rei branco": xeque["branco"] = True
+  print('\n\x1b[31m')
+  if xeque['preto'] and xeque['branco']: print("Ambos os reis estão em cheque") 
+  elif xeque['preto']: print("Rei preto está em cheque") 
+  elif xeque['branco']: print("Rei branco está em cheque") 
+  else: print("\x1b[32mNenhum rei esta em cheque")
+  print('\n\x1b[m')
+
+def main():
+  while True:
+    tabuleiro = []
+    resultado = {}
+    estaVazio = True
+    for i in range(0, 8): tabuleiro.append(input(f"{i + 1}: "))
+    for y, linha in enumerate(tabuleiro):
+      for x, casa in enumerate(linha):
+        if casa != '.': 
+          estaVazio = False
+          resultado[f"{x}{y}_{casa}"] = mapear(x, y, tabuleiro, casa.isupper())
+    imprimeResultado(resultado)
+    if estaVazio: break
+
+def pecasAleatorias():
+  pecas = ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'q', 'r', 'r', 'b', 'b', 'n', 'n']
+  random.shuffle(pecas)
+  pecas = pecas[0: random.randint(0, 15)]
+  pecas.append('k')
+  return pecas
+
+def tabuleiroAleatorio ():
+  tabuleiro = [
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+    [".",".",".",".",".",".",".", "."],
+  ]
+
+  coordenadas = []
+  for y in range(0, 7):
+    for x in range(0, 7): coordenadas.append([x, y])
+  random.shuffle(coordenadas)
+  pecas = pecasAleatorias() + list(map(lambda p: p.upper(), pecasAleatorias()))
+  random.shuffle(pecas)
+  
+  for i, peca in enumerate(pecas):
+    x = int(coordenadas[i][0])
+    y = int(coordenadas[i][1])
+    tabuleiro[y][x] = peca
+
+  for i, linha in enumerate(tabuleiro):
+    tabuleiro[i] = ''.join(linha)
+
+  print("\n  1 2 3 4 5 6 7 8")
+  for i, linha in enumerate(tabuleiro):
+    sequencia = f"{i} "
+    for casa in linha:
+      sequencia += f" {casa}"
+    print(sequencia)
+  
+  print()
+  return tabuleiro
+
+def teste():
+  while True:
+    resultado = {}
+    tabuleiro = tabuleiroAleatorio()
+    for y, linha in enumerate(tabuleiro):
+      for x, casa in enumerate(linha):
+        if casa != '.': 
+          resultado[f"{x}{y}_{casa}"] = mapear(x, y, tabuleiro, casa.isupper())
+    imprimeResultado(resultado)
+
+    if not int(input("Continuar [0/1]:")): break
+
+teste()

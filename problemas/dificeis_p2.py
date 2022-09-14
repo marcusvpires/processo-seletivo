@@ -76,7 +76,7 @@ def main(jogo):
     for c, casa in enumerate(linha):
       if casa == 'k' and checkXeque(l, c, jogo): return "Rei preto está em cheque"
       elif casa == 'K' and checkXeque(l, c, jogo, True): return "Rei branco está em cheque"
-  return "nenhum rei esta em cheque."
+  return "Nenhum rei esta em cheque."
 
 def checkXeque(l, c, jogo, preto = False):
   def check(y, x, ataque):
