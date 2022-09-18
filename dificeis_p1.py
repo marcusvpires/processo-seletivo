@@ -10,13 +10,14 @@ possibilidade de extração de novo diamante.
 
 """
 
-def mine (str):
+def encontra_letra(letra, frase):
+  return sum(caractere == letra for caractere in frase)
+
+def minerar (str):
   str = str.replace(".", "")
-  dim = 0
-  while len(str) > 1 and str.find("<>") != -1:
-    str = str.replace("<>", "", 1)
-    dim += 1
-  return dim
+  esquerdo = encontra_letra("<", str)
+  direito  = encontra_letra(">", str)
+  return esquerdo if esquerdo < direito else direito
 
 def main ():
   res = []
@@ -24,10 +25,10 @@ def main ():
   N = input("Numero de casos: ")
   while not N.isdigit(): N = input("Numero de casos: ")
 
-  for c in range(0, int(N)):
-    teste = input(f"Teste {c}: ")
-    while len(teste) > 1000: teste = input(f"Teste {c}: ")
-    res.append(mine(teste))
+  for contador in range(0, int(N)):
+    teste = input(f"Teste {contador}: ")
+    while len(teste) > 1000: teste = input(f"Teste {contador}: ")
+    res.append(minerar(teste))
   
   for r in res: print(r)
 

@@ -61,14 +61,14 @@ def mapear(x, y, tabuleiro, isMaiusculo = False):
 
   pecas = ["RQ", "BQ", "P", "N"]
   if isMaiusculo: pecas = list(map(lambda peca: peca.lower(), pecas))
-  mapa["norte"]    = expansao(lambda i: y - i, lambda i: x,     pecas[0], tabuleiro, tabela) # norte
-  mapa["sul"]      = expansao(lambda i: y + i, lambda i: x,     pecas[0], tabuleiro, tabela) # sul
-  mapa["leste"]    = expansao(lambda i: y,     lambda i: x + i, pecas[0], tabuleiro, tabela) # leste
-  mapa["oeste"]    = expansao(lambda i: y,     lambda i: x - i, pecas[0], tabuleiro, tabela) # oeste
-  mapa["noroeste"] = expansao(lambda i: y - i, lambda i: x - i, pecas[1], tabuleiro, tabela) # noroeste
-  mapa["nordeste"] = expansao(lambda i: y - i, lambda i: x + i, pecas[1], tabuleiro, tabela) # nordeste
-  mapa["sudoeste"] = expansao(lambda i: y + i, lambda i: x - i, pecas[1], tabuleiro, tabela) # sudoeste
-  mapa["sudeste"] = expansao(lambda i: y + i, lambda i: x + i, pecas[1], tabuleiro, tabela) # suldeste
+  mapa["norte"]    = expansao(lambda i: y - i, lambda i: x,     pecas[0], tabuleiro, tabela)
+  mapa["sul"]      = expansao(lambda i: y + i, lambda i: x,     pecas[0], tabuleiro, tabela)
+  mapa["leste"]    = expansao(lambda i: y,     lambda i: x + i, pecas[0], tabuleiro, tabela)
+  mapa["oeste"]    = expansao(lambda i: y,     lambda i: x - i, pecas[0], tabuleiro, tabela)
+  mapa["noroeste"] = expansao(lambda i: y - i, lambda i: x - i, pecas[1], tabuleiro, tabela)
+  mapa["nordeste"] = expansao(lambda i: y - i, lambda i: x + i, pecas[1], tabuleiro, tabela)
+  mapa["sudoeste"] = expansao(lambda i: y + i, lambda i: x - i, pecas[1], tabuleiro, tabela)
+  mapa["sudeste"]  = expansao(lambda i: y + i, lambda i: x + i, pecas[1], tabuleiro, tabela)
 
   mapa["peao"]   = (direcionado([[y+1, x+1], [y+1, x-1]], pecas[2], tabuleiro, tabela)) # peao
   mapa["cavalo"] = (direcionado([
@@ -114,6 +114,8 @@ def main():
           resultado[f"{x}{y}_{casa}"] = mapear(x, y, tabuleiro, casa.isupper())
     imprimeResultado(resultado)
     if estaVazio: break
+
+main()
 
 def pecasAleatorias():
   pecas = ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'q', 'r', 'r', 'b', 'b', 'n', 'n']
@@ -171,4 +173,4 @@ def teste():
 
     if not int(input("Continuar [0/1]:")): break
 
-teste()
+# teste()

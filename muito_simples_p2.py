@@ -4,8 +4,8 @@
 
 """
 
-def converte_temperatura(fahrenheit): 
+def fahrenheitParaCelsius(fahrenheit): 
   return (fahrenheit - 32) * 5.0/9.0
 
-res = converte_temperatura(77.2)
-print(res);
+res = fahrenheitParaCelsius(77.2)
+print(f"{res:.2f}°C")

@@ -5,7 +5,9 @@
 """
 
 def encontra_letra(letra, frase):
+  letra = letra.strip() # remove possiveis espaços vazios
+  # soma +1 para cada caracter da frase igual a letra 
   return sum(caractere == letra for caractere in frase)
 
-res = encontra_letra('a ', 'uma frase generica de questões de programação')
+res = encontra_letra(' a ', 'uma frase generica de questões de programação')
 print(res)

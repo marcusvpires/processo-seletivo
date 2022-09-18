@@ -2,7 +2,7 @@
   "editor.wordWrap": "on",
   "[python]": {
     "editor.insertSpaces": true,
-    "editor.tabSize": 4 
+    "editor.tabSize": 2
   },
   "code-runner.clearPreviousOutput": true,
   "debug.terminal.clearBeforeReusing": true

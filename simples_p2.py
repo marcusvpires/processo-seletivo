@@ -4,11 +4,9 @@
 
 """
 
-from typing import Counter
-
 def num_perfeito (valor):
   contador = 1
-  soma = 0
+  soma = 0 # equivalente ao numero perfeito
   while valor > soma:
     soma += contador
     contador += 1

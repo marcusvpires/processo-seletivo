@@ -2,8 +2,13 @@
 
 Camisa 101  •  Programação  •  Etapa 1
 
-## Documentação da lista
+## Observações
+Os problemas foram resolvidos em Python 3.10.7 no VScode
 
-> Muito simples
+É possivel rodar o programa em qualquer ambiente com Python 3.10.7, apenas o problema "./dificeis_p2_extra.py" depende de um output com suporte a cores para mostrar os resultados corretamente.
 
-### Problema 1
+Para executar no cmd:
+
+```
+python -u "{caminho_para_a_pasta}\dificeis_p2_extra.py"
+```
