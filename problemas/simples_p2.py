@@ -12,6 +12,6 @@ def num_perfeito (valor):
     contador += 1
   return soma == valor
 
-numero = int(input("Valor: "))
-res = num_perfeito(numero)
+valor = int(input("Valor: "))
+res = num_perfeito(valor)
 print(res)

@@ -14,7 +14,6 @@ def encontra_letra(letra, frase):
   return sum(caractere == letra for caractere in frase)
 
 def minerar (str):
-  str = str.replace(".", "")
   esquerdo = encontra_letra("<", str)
   direito  = encontra_letra(">", str)
   return esquerdo if esquerdo < direito else direito

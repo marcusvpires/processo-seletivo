@@ -5,7 +5,7 @@
 """
 
 def fahrenheitParaCelsius(fahrenheit): 
-  return (fahrenheit - 32) * 5.0/9.0
+  return (fahrenheit - 32) * 5 / 9
 
 res = fahrenheitParaCelsius(77.2)
 print(f"{res:.2f}°C")

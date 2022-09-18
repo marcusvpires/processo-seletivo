@@ -1,9 +1,7 @@
 """
 
-2) Você deverá escrever um programa que leia um tabuleiro de xadrez e identifique se o Rei está em xeque. Um rei está sob xeque caso esteja ocupando uma posição no tabuleiro
-que pode ser ocupada pelo oponente no próximo movimento dele. Considerando que a entrada do programa consistirá em caracteres, para diferenciar as peças pretas das brancas
-será feito o seguinte. As peças brancas serão representadas por letras maiúsculas, enquanto as pretas por minúsculas. O lado do tabuleiro ocupado inicialmente pelas peças
-brancas será sempre a parte inferior, enquanto a superior será a ocupada inicialmente pelas pretas.
+2) Você deverá escrever um programa que leia um tabuleiro de xadrez e identifique se o Rei está em xeque. Um rei está sob xeque caso esteja ocupando uma posição no tabuleiro que pode ser ocupada pelo oponente no próximo movimento dele. Considerando que a entrada do programa  onsistirá em caracteres, para diferenciar as peças pretas das brancas
+será feito o seguinte. As peças brancas serão representadas por letras maiúsculas, enquanto as pretas por minúsculas. O lado do tabuleiro ocupado inicialmente pelas peças brancas será sempre a parte inferior, enquanto a superior será a ocupada inicialmente pelas pretas.
 
 Peão:     Torre:    Bispo:    Rainha:   Rei:      Cavalo:
 ........  ...*....  .......*  ...*...*  ........  ........
@@ -72,7 +70,7 @@ RNBQKB.R
 
 """
 
-def checkXeque(l, c, tabuleiro, preto = False):
+def checkXeque(l, c, tabuleiro, branco = False):
   def check(y, x, ataque):
     # categoria null: casa vazia
     # categoria 1: bloqueio ou fora do trabuleiro
@@ -82,20 +80,20 @@ def checkXeque(l, c, tabuleiro, preto = False):
     if ataque.find(cs) != -1: return 2
     if cs != '.': return 1
 
-  def expansao(linha, coluna, ataque, id):
+  def expansao(linha, coluna, ataque):
     # linha e coluna são f(i) que expande da coordenada da peça para uma determinada direção
     # as direções estão representadas pela rosa dos ventos no arquivo "./dificeis_p2_extra.py"
     # ataque são as peças que podem atacar na respectiva direção (ex: bispo em [l - i, c + i])
-    if preto: ataque = ataque.lower()
+    if branco: ataque = ataque.lower()
     for i in range(1, 8):
       res = check(linha(i), coluna(i), ataque)
       match res:
         case 1: return False # bloqueio ou fora do trabuleiro
         case 2: return True #xeque
 
-  def especifico(cods, ataque, id):
+  def especifico(cods, ataque):
     # cods são coordenadas das peças com movimentos específicos
-    if preto: ataque = ataque.lower()
+    if branco: ataque = ataque.lower()
     for [linha, coluna] in cods:
       res = check(linha, coluna, ataque)
       match res:
