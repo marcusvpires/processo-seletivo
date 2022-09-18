@@ -1,4 +1,4 @@
-# PS Crossbots 2022/2
+# Processo seletivo 2022/2
 
 Camisa 101  •  Programação  •  Etapa 1
 
