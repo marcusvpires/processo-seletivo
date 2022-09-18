@@ -4,7 +4,17 @@
 
 """
 
-lista = [13, 5, 7, 6, 4, 8, 16, 31, 9, 21]
+def perguntaLista():
+  lista = []
+  print("Digite uma lista de 10 numeros")
+  for i in range(0, 10):
+    numero = input(f"{i + 1}: ")
+    while not numero.isdigit():
+      print("Digite um numero válido")
+      numero = input(f"{i + 1}: ")
+    lista.append(int(numero))
+  return lista
+
 
 def perguntaPosicao (menssagem):
   while True:
@@ -14,6 +24,8 @@ def perguntaPosicao (menssagem):
       raise ValueError('Posição inexistente')
     except ValueError: print("Digite um número entre 0 e 9")
 
+# lista = [13, 5, 7, 6, 4, 8, 16, 31, 9, 21]
+lista = perguntaLista()
 x = perguntaPosicao("Digite x: ")
 y = perguntaPosicao("Digite y: ")
 
