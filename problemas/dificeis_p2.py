@@ -101,17 +101,17 @@ def checkXeque(l, c, tabuleiro, branco = False):
         # case 1: return False
         case 2: return True # Xeque
   
-  if expansao(lambda i: l - i, lambda i: c,     "RQ", "n" ) : return True # norte
-  if expansao(lambda i: l + i, lambda i: c,     "RQ", "s" ) : return True # sul
-  if expansao(lambda i: l,     lambda i: c + i, "RQ", "l" ) : return True # leste
-  if expansao(lambda i: l,     lambda i: c - i, "RQ", "o" ) : return True # oeste
-  if expansao(lambda i: l - i, lambda i: c - i, "BQ", "no") : return True # noroeste
-  if expansao(lambda i: l - i, lambda i: c + i, "BQ", "nl") : return True # nordeste
-  if expansao(lambda i: l + i, lambda i: c - i, "BQ", "so") : return True # sudoeste
-  if expansao(lambda i: l + i, lambda i: c + i, "BQ", "sl") : return True # sudeste
+  if expansao(lambda i: l - i, lambda i: c,     "RQ") : return True # norte
+  if expansao(lambda i: l + i, lambda i: c,     "RQ") : return True # sul
+  if expansao(lambda i: l,     lambda i: c + i, "RQ") : return True # leste
+  if expansao(lambda i: l,     lambda i: c - i, "RQ") : return True # oeste
+  if expansao(lambda i: l - i, lambda i: c - i, "BQ") : return True # noroeste
+  if expansao(lambda i: l - i, lambda i: c + i, "BQ") : return True # nordeste
+  if expansao(lambda i: l + i, lambda i: c - i, "BQ") : return True # sudoeste
+  if expansao(lambda i: l + i, lambda i: c + i, "BQ") : return True # sudeste
 
-  if especifico([[l+1, c+1], [l+1, c-1]], "P", "p") : return True # Peão
-  if especifico([[l-2, c+1], [l-2, c-1], [l+2, c+1], [l+2, c-1], [l+1, c-2], [l+1, c+2], [l-1, c+2],  [l-1, c-2]], "N", "n") : return True # cavalo
+  if especifico([[l+1, c+1], [l+1, c-1]], "P") : return True # Peão
+  if especifico([[l-2, c+1], [l-2, c-1], [l+2, c+1], [l+2, c-1], [l+1, c-2], [l+1, c+2], [l-1, c+2],  [l-1, c-2]], "N") : return True # cavalo
 
 def main ():
   resultados = []
